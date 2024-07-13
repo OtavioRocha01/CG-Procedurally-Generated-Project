@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WebGL2 Example</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="uiContainer">
+        <div id="ui">
+            <label for="density">Densidade</label>
+            <input type="range" id="density" min="1" max="100" value="100">
+            <input type="text" id="seed" placeholder="Seed">
+            <button id="newSeed">Gerar</button>
+            <button id="generateButton">Gerar seed aleatoria</button>
+        </div>
+    </div>
+    <script src="libs/webgl-utils.js"></script>
+    <script src="libs/webgl-lessons-ui.js"></script>
+    <script src="https://twgljs.org/dist/4.x/twgl-full.min.js"></script>
+    <script src="libs/m4.js"></script>
+    <script src="js/main.js"></script>
+    <!-- <script src="js/main2.js"></script> -->
+</body>
+</html>
