@@ -64,7 +64,6 @@ void main () {
 `;
 
 
-
 async function main() {
   var randButton = document.getElementById("generateButton");
   var seedInput = document.getElementById("newSeed");
@@ -89,9 +88,6 @@ async function main() {
   let numTrees3 = density * perTree3;
   let numBigRocks = density * perBigRock;
   let numStones = density * perStone;
-
-  var eye = [0, 50, 450]; // exemplo para mostrar o efeito da iluminação: [0, 300, 300];
-  var target = [0, -0.3, -1]; // perspectiva horizontal - [0, 0, 1]; efeito da iluminação na camera
 
   twgl.setAttributePrefix("a_");
 
@@ -414,8 +410,6 @@ async function main() {
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.enable(gl.DEPTH_TEST);
   
-
-
     const sharedUniforms = {
       u_lightDirection: m4.normalize([-1, 3, 5]),
       u_view: view,
@@ -497,7 +491,7 @@ async function main() {
 
             twgl.drawBufferInfo(gl, bufferInfo);
       }
-  }
+    }
   }
   
   render();
