@@ -31,4 +31,4 @@ Já no arquivo main2.js tem a adapatação que tive que fazer para poder impleme
  - Texturas e objetos
  - Slider que muda a quantidade de objetos
 
-###### Link para o vídeo: 
+###### Link para o vídeo: https://drive.google.com/file/d/1XkgYXYVAgSqAo96TJPHKfki4fd1blrA4/view?usp=sharing
