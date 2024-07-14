@@ -38,6 +38,7 @@ async function main() {
   var seedInput = document.getElementById("newSeed");
   var canvas = document.querySelector("#canvas");
   var gl = canvas.getContext("webgl2");
+
   
   if (!gl) {
     return;

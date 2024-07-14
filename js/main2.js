@@ -63,7 +63,9 @@ void main () {
 }
 `;
 
-let density = 100;
+const offSet = 40;
+const max_density = 500;
+let density = 500;
 
 async function main() {
   var randButton = document.getElementById("generateButton");
@@ -109,7 +111,7 @@ async function main() {
       positions_z[ii] = rand();
     }
     console.log("seed: " + seed);
-    drawScene();
+    render();
   }
 
   seedInput.onclick = function() {
@@ -120,20 +122,19 @@ async function main() {
       positions_z[ii] = rand();
     }
     console.log("seed: " + seed);
-    drawScene();
+    render();
   }
 
   const meshProgramInfo = twgl.createProgramInfo(gl, [vertexShaderSource, fragmentShaderSource]);
-  //var program = webglUtils.createProgramFromSources(gl,[vertexShaderSource, fragmentShaderSource]);
 
-  const objHref = 'textures/low_poly_tree.obj';  
+  const objHref = 'textures/tree1.obj';  
   const response = await fetch(objHref);
   const text = await response.text();
   const obj = parseOBJ(text);
   
-  // Atualize o caminho para os arquivos MTL locais
+
   const matTexts = await Promise.all(obj.materialLibs.map(async filename => {
-    const matHref = `textures/low_poly_tree.mtl`;
+    const matHref = `textures/tree1.mtl`;
     const response = await fetch(matHref);
     return await response.text();
   }));
@@ -185,48 +186,30 @@ async function main() {
   
   const extents = getGeometriesExtents(obj.geometries);
   const range = m4.subtractVectors(extents.max, extents.min);
-  let objOffset = [0, -15, 0];
+  let objOffset = [0, 0, 0];
 
-  const cameraTarget = [0, 0, 0];
-  const radius = 30;
+  const cameraTarget = [0, 10, 0];
   const cameraPosition = m4.addVectors(cameraTarget, [
-    0,
-    0,
-    radius,
+    -30,
+    60,
+    180,
   ]);
-  const zNear = radius / 100;
-  const zFar = radius * 3;
-
-  // function radToDeg(r) {
-  //   return r * 180 / Math.PI;
-  // }
+  const zNear = 1;
+  const zFar = 2000;
 
   function degToRad(d) {
     return d * Math.PI / 180;
   }
 
-  var fieldOfViewRadians = degToRad(120);
-  var cameraAngleRadians = degToRad(0);
+  document.getElementById("density").addEventListener("input", function() {
+    density = parseInt(document.getElementById("density").value);
+    requestAnimationFrame(render);
+  });
 
-  //requestAnimationFrame(drawScene);
-  // drawScene();
-
-  // webglLessonsUI.setupSlider("#cameraAngle", {value: radToDeg(cameraAngleRadians), slide: updateCameraAngle, min: -360, max: 360});
-
-  // document.getElementById("density").addEventListener("input", function() {
-  //   density = parseInt(document.getElementById("density").value);
-  //   drawScene();
-  // });
-
-  // function updateCameraAngle(event, ui) {
-  //   cameraAngleRadians = degToRad(ui.value);
-  //   drawScene();
-  // }  
 
   function render(time) { 
     time *= 0.001;
 
-    objOffset = [positions_x[0], -15, positions_z[ii]];
     twgl.resizeCanvasToDisplaySize(gl.canvas);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.enable(gl.DEPTH_TEST);
@@ -251,78 +234,21 @@ async function main() {
 
     let u_world = m4.yRotation(0);
 
-
-    for ( ii = 0 ; ii < 5 ; ii++ ) {
-        objOffset = [positions_x[ii] * 500 - 80, -15, positions_z[ii] * 500 - 80];
+    for ( ii = 0 ; ii < density ; ++ii ) {
+        objOffset = [positions_x[ii] * 100 - 50, 0, positions_z[ii] * 100 - 50];
         u_world = m4.translate(u_world, ...objOffset);
         for (const {bufferInfo, vao, material} of parts) {
             gl.bindVertexArray(vao);
             twgl.setUniforms(meshProgramInfo, {
-            u_world,
+              u_world,
             }, material);
+
             twgl.drawBufferInfo(gl, bufferInfo);
         }
     }
 
     requestAnimationFrame(render);
-
-  }
-
-  // function drawScene(time) {
-  //   time *= 0.001;  // convert to seconds
-
-  //   webglUtils.resizeCanvasToDisplaySize(gl.canvas);
-
-  //   gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
-
-  //   gl.clearColor(0, 0, 0, 0);
-  //   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-  //   gl.enable(gl.DEPTH_TEST);
-
-  //   gl.enable(gl.CULL_FACE);
-
-  //   gl.useProgram(program);
-
-  //   gl.bindVertexArray(vao);
-
-  //   var aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-  //   var zNear = 1;
-  //   var zFar = 2000;
-  //   var projectionMatrix = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
-
-  //   var centerPosition = [0, 0, 0];
-  //   var up = [0, 1, 0];
-  //   var cameraMatrix = m4.yRotation(cameraAngleRadians);
-  //   cameraMatrix = m4.translate(cameraMatrix, 500, 200, 0);
-
-  //   var cameraPosition = [
-  //     cameraMatrix[12],
-  //     cameraMatrix[13],
-  //     cameraMatrix[14],
-  //   ];
-    
-  //   var cameraMatrix = m4.lookAt(cameraPosition, centerPosition, up);
-
-  //   var viewMatrix = m4.inverse(cameraMatrix);
-
-  //   var viewProjectionMatrix = m4.multiply(projectionMatrix, viewMatrix);
-
-  //   for (var ii = 0; ii < density; ++ii) {
-  //     var x = positions_x[ii] * 500 - 80;
-  //     var z = positions_z[ii] * 500 - 80;
-  //     var matrix = m4.translate(viewProjectionMatrix, x, 0, z);
-
-  //     gl.uniformMatrix4fv(matrixLocation, false, matrix);
-
-  //     var primitiveType = gl.TRIANGLES;
-  //     var offset = 0;
-  //     var count = 16 * 6;
-  //     gl.drawArrays(primitiveType, offset, count);
-  //   }
-    
-  // }
-  
+  }  
   requestAnimationFrame(render);
 }
 
@@ -488,11 +414,6 @@ function parseOBJ(text) {
     geometries,
     materialLibs,
   };
-}
-
-function parseMapArgs(unparsedArgs) {
-  // TODO: handle options
-  return unparsedArgs;
 }
 
 function parseMTL(text) {
