@@ -63,9 +63,7 @@ void main () {
 }
 `;
 
-const offSet = 40;
-const max_density = 500;
-let density = 500;
+
 
 async function main() {
   var randButton = document.getElementById("generateButton");
@@ -76,6 +74,24 @@ async function main() {
   if (!gl) {
     return;
   }
+
+  // VARIABLES
+  let density = 10000;
+
+  let perTree1 = .2;
+  let perTree2 = .2;
+  let perTree3 = .2;
+  let perBigRock = .2;
+  let perStone = .2;
+
+  let numTrees1 = density * perTree1;
+  let numTrees2 = density * perTree2;
+  let numTrees3 = density * perTree3;
+  let numBigRocks = density * perBigRock;
+  let numStones = density * perStone;
+
+  var eye = [0, 50, 450]; // exemplo para mostrar o efeito da iluminação: [0, 300, 300];
+  var target = [0, -0.3, -1]; // perspectiva horizontal - [0, 0, 1]; efeito da iluminação na camera
 
   twgl.setAttributePrefix("a_");
 
@@ -94,21 +110,76 @@ async function main() {
     }
   }
   
-  var seed = Math.floor(Math.random() * 10000000) ;
+  var seed = Math.floor(Math.random() * 100000) ;
   var rand = sfc32(seed, seed, seed, seed);
-  var positions_x = new Float32Array(density);
-  var positions_z = new Float32Array(density);
-  for (var ii = 0; ii < density; ++ii) {
-    positions_x[ii] = rand();
-    positions_z[ii] = rand();
+
+
+  // GET TREE1s POSITIONS
+  var positions_x_trees1 = new Float32Array(numTrees1);
+  var positions_z_trees1 = new Float32Array(numTrees1);
+  for (var ii = 0; ii < numTrees1; ++ii) {
+    positions_x_trees1[ii] = rand() * 100 - 50;
+    positions_z_trees1[ii] = rand() * 100 - 50;
+  }
+  
+  // GET TREE2s POSITIONS
+  var positions_x_trees2 = new Float32Array(numTrees2);
+  var positions_z_trees2 = new Float32Array(numTrees2);
+  for (var ii = 0; ii < numTrees2; ++ii) {
+    positions_x_trees2[ii] = rand() * 100 - 50;
+    positions_z_trees2[ii] = rand() * 100 - 50;
+  }
+
+  // GET TREE3s POSITIONS
+  var positions_x_trees3 = new Float32Array(numTrees3);
+  var positions_z_trees3 = new Float32Array(numTrees3);
+  for (var ii = 0; ii < numTrees3; ++ii) {
+    positions_x_trees3[ii] = rand() * 100 - 50;
+    positions_z_trees3[ii] = rand() * 100 - 50;
+  }
+
+  // GET BIG ROCKS POSITIONS
+  var positions_x_rocks = new Float32Array(numBigRocks);
+  var positions_z_rocks = new Float32Array(numBigRocks);
+  for (var ii = 0; ii < numBigRocks; ++ii) {
+    positions_x_rocks[ii] = rand() * 100 - 50;
+    positions_z_rocks[ii] = rand() * 100 - 50;
+  }
+
+  // GET STONES POSITIONS
+  var positions_x_stones = new Float32Array(numStones);
+  var positions_z_stones = new Float32Array(numStones);
+  for (var ii = 0; ii < numStones; ++ii) {
+    positions_x_stones[ii] = rand() * 100 - 50;
+    positions_z_stones[ii] = rand() * 100 - 50;
   }
 
   randButton.onclick = function() {
-    seed = Math.floor(Math.random() * 10000000);
+    seed = Math.floor(Math.random() * 100000);
     rand = sfc32(seed, seed, seed, seed);
-    for (var ii = 0; ii < density; ++ii) {
-      positions_x[ii] = rand();
-      positions_z[ii] = rand();
+    for (var ii = 0; ii < numTrees1; ++ii) {
+      positions_x_trees1[ii] = rand() * 100 - 50;
+      positions_z_trees1[ii] = rand() * 100 - 50;
+    }
+
+    for (var ii = 0; ii < numTrees2; ++ii) {
+      positions_x_trees2[ii] = rand() * 100 - 50;
+      positions_z_trees2[ii] = rand() * 100 - 50;
+    }
+
+    for (var ii = 0; ii < numTrees3; ++ii) {
+      positions_x_trees3[ii] = rand() * 100 - 50;
+      positions_z_trees3[ii] = rand() * 100 - 50;
+    }
+
+    for (var ii = 0; ii < numBigRocks; ++ii) {
+      positions_x_rocks[ii] = rand() * 100 - 50;
+      positions_z_rocks[ii] = rand() * 100 - 50;
+    }
+
+    for (var ii = 0; ii < numStones; ++ii) {
+      positions_x_stones[ii] = rand() * 100 - 50;
+      positions_z_stones[ii] = rand() * 100 - 50;
     }
     console.log("seed: " + seed);
     render();
@@ -117,9 +188,30 @@ async function main() {
   seedInput.onclick = function() {
     seed = parseInt(document.getElementById("seed").value);
     rand = sfc32(seed, seed, seed, seed);
-    for (var ii = 0; ii < density; ++ii) {
-      positions_x[ii] = rand();
-      positions_z[ii] = rand();
+    
+    for (var ii = 0; ii < numTrees1; ++ii) {
+      positions_x_trees1[ii] = rand() * 100 - 50;
+      positions_z_trees1[ii] = rand() * 100 - 50;
+    }
+
+    for (var ii = 0; ii < numTrees2; ++ii) {
+      positions_x_trees2[ii] = rand() * 100 - 50;
+      positions_z_trees2[ii] = rand() * 100 - 50;
+    }
+
+    for (var ii = 0; ii < numTrees3; ++ii) {
+      positions_x_trees3[ii] = rand() * 100 - 50;
+      positions_z_trees3[ii] = rand() * 100 - 50;
+    }
+
+    for (var ii = 0; ii < numBigRocks; ++ii) {
+      positions_x_rocks[ii] = rand() * 100 - 50;
+      positions_z_rocks[ii] = rand() * 100 - 50;
+    }
+
+    for (var ii = 0; ii < numStones; ++ii) {
+      positions_x_stones[ii] = rand() * 100 - 50;
+      positions_z_stones[ii] = rand() * 100 - 50;
     }
     console.log("seed: " + seed);
     render();
@@ -127,20 +219,19 @@ async function main() {
 
   const meshProgramInfo = twgl.createProgramInfo(gl, [vertexShaderSource, fragmentShaderSource]);
 
-  const objHref = 'textures/tree1.obj';  
-  const response = await fetch(objHref);
-  const text = await response.text();
-  const obj = parseOBJ(text);
+  // LOAD TREE1
+  const tree1Href = 'textures/tree1.obj';  
+  const tree1Response = await fetch(tree1Href);
+  const tree1Text = await tree1Response.text();
+  const tree1 = parseOBJ(tree1Text);
   
-
-  const matTexts = await Promise.all(obj.materialLibs.map(async filename => {
+  const tree1MatTexts = await Promise.all(tree1.materialLibs.map(async filename => {
     const matHref = `textures/tree1.mtl`;
     const response = await fetch(matHref);
     return await response.text();
   }));
-  const materials = parseMTL(matTexts.join('\n'));
-
-  const parts = obj.geometries.map(({material, data}) => {
+  const tree1Materials = parseMTL(tree1MatTexts.join('\n'));
+  const tree1Parts = tree1.geometries.map(({material, data}) => {
     if (data.color) {
       if (data.position.length === data.color.length) {
         data.color = { numComponents: 3, data: data.color };
@@ -152,42 +243,138 @@ async function main() {
     const bufferInfo = twgl.createBufferInfoFromArrays(gl, data);
     const vao = twgl.createVAOFromBufferInfo(gl, meshProgramInfo, bufferInfo);
     return {
-      material: materials[material],
+      material: tree1Materials[material],
       bufferInfo,
       vao,
     };
   });
 
-  function getExtents(positions) {
-    const min = positions.slice(0, 3);
-    const max = positions.slice(0, 3);
-    for (let i = 3; i < positions.length; i += 3) {
-      for (let j = 0; j < 3; ++j) {
-        const v = positions[i + j];
-        min[j] = Math.min(v, min[j]);
-        max[j] = Math.max(v, max[j]);
+
+  // LOAD TREE2
+  const tree2Href = 'textures/tree2.obj';
+  const tree2Response = await fetch(tree2Href);
+  const tree2Text = await tree2Response.text();
+  const tree2 = parseOBJ(tree2Text);
+
+  const tree2MatTexts = await Promise.all(tree2.materialLibs.map(async filename => {
+    const matHref = `textures/tree2.mtl`;
+    const response = await fetch(matHref);
+    return await response.text();
+  }));
+  const tree2Materials = parseMTL(tree2MatTexts.join('\n'));
+  const tree2Parts = tree2.geometries.map(({material, data}) => {
+    if (data.color) {
+      if (data.position.length === data.color.length) {
+        data.color = { numComponents: 3, data: data.color };
       }
+    } else {
+      data.color = { value: [1, 1, 1, 1] };
     }
-    return {min, max};
-  }
 
-  function getGeometriesExtents(geometries) {
-    return geometries.reduce(({min, max}, {data}) => {
-      const minMax = getExtents(data.position);
-      return {
-        min: min.map((min, ndx) => Math.min(minMax.min[ndx], min)),
-        max: max.map((max, ndx) => Math.max(minMax.max[ndx], max)),
-      };
-    }, {
-      min: Array(3).fill(Number.POSITIVE_INFINITY),
-      max: Array(3).fill(Number.NEGATIVE_INFINITY),
-    });
-  }
-  
-  const extents = getGeometriesExtents(obj.geometries);
-  const range = m4.subtractVectors(extents.max, extents.min);
-  let objOffset = [0, 0, 0];
+    const bufferInfo = twgl.createBufferInfoFromArrays(gl, data);
+    const vao = twgl.createVAOFromBufferInfo(gl, meshProgramInfo, bufferInfo);
+    return {
+      material: tree2Materials[material],
+      bufferInfo,
+      vao,
+    };
+  });
 
+
+  // LOAD TREE3
+  const tree3Href = 'textures/tree3.obj';
+  const tree3Response = await fetch(tree3Href);
+  const tree3Text = await tree3Response.text();
+  const tree3 = parseOBJ(tree3Text);
+
+  const tree3MatTexts = await Promise.all(tree3.materialLibs.map(async filename => {
+    const matHref = `textures/tree3.mtl`;
+    const response = await fetch(matHref);
+    return await response.text();
+  }));
+  const tree3Materials = parseMTL(tree3MatTexts.join('\n'));
+  const tree3Parts = tree3.geometries.map(({material, data}) => {
+    if (data.color) {
+      if (data.position.length === data.color.length) {
+        data.color = { numComponents: 3, data: data.color };
+      }
+    } else {
+      data.color = { value: [1, 1, 1, 1] };
+    }
+
+    const bufferInfo = twgl.createBufferInfoFromArrays(gl, data);
+    const vao = twgl.createVAOFromBufferInfo(gl, meshProgramInfo, bufferInfo);
+    return {
+      material: tree3Materials[material],
+      bufferInfo,
+      vao,
+    };
+  });
+
+
+  // LOAD BIG ROCK
+  const bigRockHref = 'textures/bigRock.obj';
+  const bigRockResponse = await fetch(bigRockHref);
+  const bigRockText = await bigRockResponse.text();
+  const bigRock = parseOBJ(bigRockText);
+
+  const bigRockMatTexts = await Promise.all(bigRock.materialLibs.map(async filename => {
+    const matHref = `textures/bigRock.mtl`;
+    const response = await fetch(matHref);
+    return await response.text();
+  }));
+  const bigRockMaterials = parseMTL(bigRockMatTexts.join('\n'));
+  const bigRockParts = bigRock.geometries.map(({material, data}) => {
+    if (data.color) {
+      if (data.position.length === data.color.length) {
+        data.color = { numComponents: 3, data: data.color };
+      }
+    } else {
+      data.color = { value: [1, 1, 1, 1] };
+    }
+
+    const bufferInfo = twgl.createBufferInfoFromArrays(gl, data);
+    const vao = twgl.createVAOFromBufferInfo(gl, meshProgramInfo, bufferInfo);
+    return {
+      material: bigRockMaterials[material],
+      bufferInfo,
+      vao,
+    };
+  });
+
+
+  // LOAD STONES
+  const stoneHref = 'textures/stone.obj';
+  const stoneResponse = await fetch(stoneHref);
+  const stoneText = await stoneResponse.text();
+  const stone = parseOBJ(stoneText);
+
+  const stoneMatTexts = await Promise.all(stone.materialLibs.map(async filename => {
+    const matHref = `textures/stone.mtl`;
+    const response = await fetch(matHref);
+    return await response.text();
+  }));
+  const stoneMaterials = parseMTL(stoneMatTexts.join('\n'));
+  const stoneParts = stone.geometries.map(({material, data}) => {
+    if (data.color) {
+      if (data.position.length === data.color.length) {
+        data.color = { numComponents: 3, data: data.color };
+      }
+    } else {
+      data.color = { value: [1, 1, 1, 1] };
+    }
+
+    const bufferInfo = twgl.createBufferInfoFromArrays(gl, data);
+    const vao = twgl.createVAOFromBufferInfo(gl, meshProgramInfo, bufferInfo);
+    return {
+      material: stoneMaterials[material],
+      bufferInfo,
+      vao,
+    };
+  });
+
+
+  // CAMERA
   const cameraTarget = [0, 10, 0];
   const cameraPosition = m4.addVectors(cameraTarget, [
     -30,
@@ -197,30 +384,37 @@ async function main() {
   const zNear = 1;
   const zFar = 2000;
 
+  const fieldOfViewRadians = degToRad(120);
+  const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+  const projection = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
+
+  const up = [0, 1, 0];
+  const camera = m4.lookAt(cameraPosition, cameraTarget, up);
+  const view = m4.inverse(camera);
+
   function degToRad(d) {
     return d * Math.PI / 180;
   }
 
+  // SLIDER
   document.getElementById("density").addEventListener("input", function() {
     density = parseInt(document.getElementById("density").value);
-    requestAnimationFrame(render);
+    perTree1 = .2;
+    perTree2 = .2;
+    perTree3 = .2;
+    perBigRock = .2;
+    perStone = .2;
+    render();
   });
 
 
-  function render(time) { 
-    time *= 0.001;
-
+  // FUNCTION TO DRAW
+  function render() {
     twgl.resizeCanvasToDisplaySize(gl.canvas);
     gl.viewport(0, 0, gl.canvas.width, gl.canvas.height);
     gl.enable(gl.DEPTH_TEST);
+  
 
-    const fieldOfViewRadians = degToRad(120);
-    const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
-    const projection = m4.perspective(fieldOfViewRadians, aspect, zNear, zFar);
-
-    const up = [0, 1, 0];
-    const camera = m4.lookAt(cameraPosition, cameraTarget, up);
-    const view = m4.inverse(camera);
 
     const sharedUniforms = {
       u_lightDirection: m4.normalize([-1, 3, 5]),
@@ -234,10 +428,32 @@ async function main() {
 
     let u_world = m4.yRotation(0);
 
-    for ( ii = 0 ; ii < density ; ++ii ) {
-        objOffset = [positions_x[ii] * 100 - 50, 0, positions_z[ii] * 100 - 50];
-        u_world = m4.translate(u_world, ...objOffset);
-        for (const {bufferInfo, vao, material} of parts) {
+
+    // OFFSETS
+    let tree1Offset = [0, 0, 0];
+    let tree2Offset = [0, 0, 0];
+    let tree3Offset = [0, 0, 0];
+    let bigRockOffset = [0, 0, 0];
+    let stoneOffset = [0, 0, 0];
+
+    // DRAW OBJECTS
+    for ( ii = 0 ; ii < density/2 ; ++ii ) {
+        // DRAW TREE1
+        tree1Offset = [positions_x_trees1[ii], 0, positions_z_trees1[ii]];
+        u_world = m4.translate(u_world, ...tree1Offset);
+        for (const {bufferInfo, vao, material} of tree1Parts) {
+            gl.bindVertexArray(vao);
+            twgl.setUniforms(meshProgramInfo, {
+              u_world,
+            }, material);
+
+            twgl.drawBufferInfo(gl, bufferInfo);
+        } 
+
+        // DRAW TREE2
+        tree2Offset = [positions_x_trees2[ii], 0, positions_z_trees2[ii]];
+        u_world = m4.translate(u_world, ...tree2Offset);
+        for (const {bufferInfo, vao, material} of tree2Parts) {
             gl.bindVertexArray(vao);
             twgl.setUniforms(meshProgramInfo, {
               u_world,
@@ -245,219 +461,46 @@ async function main() {
 
             twgl.drawBufferInfo(gl, bufferInfo);
         }
-    }
 
-    requestAnimationFrame(render);
-  }  
-  requestAnimationFrame(render);
-}
+        // DRAW TREE3
+        tree3Offset = [positions_x_trees3[ii], 0, positions_z_trees3[ii]];
+        u_world = m4.translate(u_world, ...tree3Offset);
+        for (const {bufferInfo, vao, material} of tree3Parts) {
+            gl.bindVertexArray(vao);
+            twgl.setUniforms(meshProgramInfo, {
+              u_world,
+            }, material);
 
+            twgl.drawBufferInfo(gl, bufferInfo);
+        }
 
-function parseOBJ(text) {
-  // because indices are base 1 let's just fill in the 0th data
-  const objPositions = [[0, 0, 0]];
-  const objTexcoords = [[0, 0]];
-  const objNormals = [[0, 0, 0]];
-  const objColors = [[0, 0, 0]];
+        // DRAW BIG ROCK
+        bigRockOffset = [positions_x_rocks[ii], 0, positions_z_rocks[ii]];
+        u_world = m4.translate(u_world, ...bigRockOffset);
+        for (const {bufferInfo, vao, material} of bigRockParts) {
+            gl.bindVertexArray(vao);
+            twgl.setUniforms(meshProgramInfo, {
+              u_world,
+            }, material);
 
-  // same order as `f` indices
-  const objVertexData = [
-    objPositions,
-    objTexcoords,
-    objNormals,
-    objColors,
-  ];
+            twgl.drawBufferInfo(gl, bufferInfo);
+        }
 
-  // same order as `f` indices
-  let webglVertexData = [
-    [],   // positions
-    [],   // texcoords
-    [],   // normals
-    [],   // colors
-  ];
+        // DRAW STONE
+        stoneOffset = [positions_x_stones[ii], 0, positions_z_stones[ii]];
+        u_world = m4.translate(u_world, ...stoneOffset);
+        for (const {bufferInfo, vao, material} of stoneParts) {
+            gl.bindVertexArray(vao);
+            twgl.setUniforms(meshProgramInfo, {
+              u_world,
+            }, material);
 
-  const materialLibs = [];
-  const geometries = [];
-  let geometry;
-  let groups = ['default'];
-  let material = 'default';
-  let object = 'default';
-
-  const noop = () => {};
-
-  function newGeometry() {
-    // If there is an existing geometry and it's
-    // not empty then start a new one.
-    if (geometry && geometry.data.position.length) {
-      geometry = undefined;
-    }
-  }
-
-  function setGeometry() {
-    if (!geometry) {
-      const position = [];
-      const texcoord = [];
-      const normal = [];
-      const color = [];
-      webglVertexData = [
-        position,
-        texcoord,
-        normal,
-        color,
-      ];
-      geometry = {
-        object,
-        groups,
-        material,
-        data: {
-          position,
-          texcoord,
-          normal,
-          color,
-        },
-      };
-      geometries.push(geometry);
-    }
-  }
-
-  function addVertex(vert) {
-    const ptn = vert.split('/');
-    ptn.forEach((objIndexStr, i) => {
-      if (!objIndexStr) {
-        return;
+            twgl.drawBufferInfo(gl, bufferInfo);
       }
-      const objIndex = parseInt(objIndexStr);
-      const index = objIndex + (objIndex >= 0 ? 0 : objVertexData[i].length);
-      webglVertexData[i].push(...objVertexData[i][index]);
-      // if this is the position index (index 0) and we parsed
-      // vertex colors then copy the vertex colors to the webgl vertex color data
-      if (i === 0 && objColors.length > 1) {
-        geometry.data.color.push(...objColors[index]);
-      }
-    });
   }
-
-  const keywords = {
-    v(parts) {
-      // if there are more than 3 values here they are vertex colors
-      if (parts.length > 3) {
-        objPositions.push(parts.slice(0, 3).map(parseFloat));
-        objColors.push(parts.slice(3).map(parseFloat));
-      } else {
-        objPositions.push(parts.map(parseFloat));
-      }
-    },
-    vn(parts) {
-      objNormals.push(parts.map(parseFloat));
-    },
-    vt(parts) {
-      // should check for missing v and extra w?
-      objTexcoords.push(parts.map(parseFloat));
-    },
-    f(parts) {
-      setGeometry();
-      const numTriangles = parts.length - 2;
-      for (let tri = 0; tri < numTriangles; ++tri) {
-        addVertex(parts[0]);
-        addVertex(parts[tri + 1]);
-        addVertex(parts[tri + 2]);
-      }
-    },
-    s: noop,    // smoothing group
-    mtllib(parts, unparsedArgs) {
-      // the spec says there can be multiple filenames here
-      // but many exist with spaces in a single filename
-      materialLibs.push(unparsedArgs);
-    },
-    usemtl(parts, unparsedArgs) {
-      material = unparsedArgs;
-      newGeometry();
-    },
-    g(parts) {
-      groups = parts;
-      newGeometry();
-    },
-    o(parts, unparsedArgs) {
-      object = unparsedArgs;
-      newGeometry();
-    },
-  };
-
-  const keywordRE = /(\w*)(?: )*(.*)/;
-  const lines = text.split('\n');
-  for (let lineNo = 0; lineNo < lines.length; ++lineNo) {
-    const line = lines[lineNo].trim();
-    if (line === '' || line.startsWith('#')) {
-      continue;
-    }
-    const m = keywordRE.exec(line);
-    if (!m) {
-      continue;
-    }
-    const [, keyword, unparsedArgs] = m;
-    const parts = line.split(/\s+/).slice(1);
-    const handler = keywords[keyword];
-    if (!handler) {
-      console.warn('unhandled keyword:', keyword);  // eslint-disable-line no-console
-      continue;
-    }
-    handler(parts, unparsedArgs);
   }
-
-  // remove any arrays that have no entries.
-  for (const geometry of geometries) {
-    geometry.data = Object.fromEntries(
-        Object.entries(geometry.data).filter(([, array]) => array.length > 0));
-  }
-
-  return {
-    geometries,
-    materialLibs,
-  };
-}
-
-function parseMTL(text) {
-  const materials = {};
-  let material;
-
-  const keywords = {
-    newmtl(parts, unparsedArgs) {
-      material = {};
-      materials[unparsedArgs] = material;
-    },
-    /* eslint brace-style:0 */
-    Ns(parts)     { material.shininess      = parseFloat(parts[0]); },
-    Ka(parts)     { material.ambient        = parts.map(parseFloat); },
-    Kd(parts)     { material.diffuse        = parts.map(parseFloat); },
-    Ks(parts)     { material.specular       = parts.map(parseFloat); },
-    Ke(parts)     { material.emissive       = parts.map(parseFloat); },
-    Ni(parts)     { material.opticalDensity = parseFloat(parts[0]); },
-    d(parts)      { material.opacity        = parseFloat(parts[0]); },
-    illum(parts)  { material.illum          = parseInt(parts[0]); },
-  };
-
-  const keywordRE = /(\w*)(?: )*(.*)/;
-  const lines = text.split('\n');
-  for (let lineNo = 0; lineNo < lines.length; ++lineNo) {
-    const line = lines[lineNo].trim();
-    if (line === '' || line.startsWith('#')) {
-      continue;
-    }
-    const m = keywordRE.exec(line);
-    if (!m) {
-      continue;
-    }
-    const [, keyword, unparsedArgs] = m;
-    const parts = line.split(/\s+/).slice(1);
-    const handler = keywords[keyword];
-    if (!handler) {
-      console.warn('unhandled keyword:', keyword);  // eslint-disable-line no-console
-      continue;
-    }
-    handler(parts, unparsedArgs);
-  }
-
-  return materials;
+  
+  render();
 }
 
 main();
